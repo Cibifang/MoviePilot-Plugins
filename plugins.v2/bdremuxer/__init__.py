@@ -59,8 +59,45 @@ class BDRemuxer(_PluginBase):
         if self._enabled:
             logger.info("BD Remuxer 插件初始化完成")
             if self._run_once:
-                thread = threading.Thread(target=self.extract, args=(self._path,))
-                thread.start()
+            # 查找所有BDMV目录
+                bdmv_paths = self.find_all_bdmv_paths(os.path.dirname(self._path))
+
+                if not bdmv_paths:
+                    self.logger.info(f"在目标路径内未发现BDMV目录")
+                    return
+
+                self.logger.info(f"找到 {len(bdmv_paths)} 个BDMV目录")
+
+                # 添加用户配置选项：处理策略
+                process_strategy = self.get_config("bdmv_process_strategy") or "all"
+
+                # 根据策略过滤BDMV目录
+                if process_strategy == "first":
+                    bdmv_paths = [bdmv_paths[0]]  # 只处理第一个
+                elif process_strategy == "containing_name":
+                    media_name = os.path.basename(target_file).split('.')[0]
+                    bdmv_paths = [p for p in bdmv_paths if media_name in p]
+
+                # 并行处理所有选定的BDMV目录
+                threads = []
+                MAX_THREADS = 3
+                active_threads = 0
+                for bdmv_path in bdmv_paths:
+                    while active_threads >= MAX_THREADS:
+                        time.sleep(5)  # 等待空闲线程
+                    active_threads += 1
+                    self.logger.info(f"开始处理BDMV: {bdmv_path}")
+                    bd_root = os.path.dirname(bdmv_path)
+                    thread = threading.Thread(target=self.process_wrapper, args=(bd_root, active_threads))
+                    thread.start()
+                    threads.append(thread)
+
+                # 等待所有线程完成
+                if self.get_config("wait_for_completion"):
+                    for t in threads:
+                        t.join()
+                    self.logger.info("所有BDMV处理完成")
+
                 self.update_config({
                     "enabled": self._enabled,
                     "delete": self._delete,
