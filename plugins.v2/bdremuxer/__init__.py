@@ -24,7 +24,7 @@ except:
 
 class BDRemuxer(_PluginBase):
     # 插件名称
-    plugin_name = "BDMV Remuxer Test"
+    plugin_name = "BDMV Remuxer Test2"
     # 插件描述
     plugin_desc = "自动提取BDMV文件夹中的视频流和音频流，合并为MKV文件"
     # 插件图标
@@ -63,10 +63,10 @@ class BDRemuxer(_PluginBase):
                 bdmv_paths = self.find_all_bdmv_paths(os.path.dirname(self._path))
 
                 if not bdmv_paths:
-                    self.logger.info(f"在目标路径内未发现BDMV目录")
+                    logger.info(f"在目标路径内未发现BDMV目录")
                     return
 
-                self.logger.info(f"找到 {len(bdmv_paths)} 个BDMV目录")
+                logger.info(f"找到 {len(bdmv_paths)} 个BDMV目录")
 
                 # 添加用户配置选项：处理策略
                 process_strategy = self.get_config("bdmv_process_strategy") or "all"
@@ -86,7 +86,7 @@ class BDRemuxer(_PluginBase):
                     while active_threads >= MAX_THREADS:
                         time.sleep(5)  # 等待空闲线程
                     active_threads += 1
-                    self.logger.info(f"开始处理BDMV: {bdmv_path}")
+                    logger.info(f"开始处理BDMV: {bdmv_path}")
                     bd_root = os.path.dirname(bdmv_path)
                     thread = threading.Thread(target=self.process_wrapper, args=(bd_root, active_threads))
                     thread.start()
@@ -96,7 +96,7 @@ class BDRemuxer(_PluginBase):
                 if self.get_config("wait_for_completion"):
                     for t in threads:
                         t.join()
-                    self.logger.info("所有BDMV处理完成")
+                    logger.info("所有BDMV处理完成")
 
                 self.update_config({
                     "enabled": self._enabled,
@@ -376,7 +376,7 @@ class BDRemuxer(_PluginBase):
                     if os.path.isdir(full_path):
                         search(full_path, depth + 1)
             except Exception as e:
-                self.logger.error(f"搜索错误: {str(e)}")
+                logger.error(f"搜索错误: {str(e)}")
 
         # 开始深度优先搜索
         search(start_path, 0)
@@ -428,10 +428,10 @@ class BDRemuxer(_PluginBase):
         bdmv_paths = self.find_all_bdmv_paths(os.path.dirname(target_file))
 
         if not bdmv_paths:
-            self.logger.info(f"在目标路径内未发现BDMV目录")
+            logger.info(f"在目标路径内未发现BDMV目录")
             return
 
-        self.logger.info(f"找到 {len(bdmv_paths)} 个BDMV目录")
+        logger.info(f"找到 {len(bdmv_paths)} 个BDMV目录")
 
         # 添加用户配置选项：处理策略
         process_strategy = self.get_config("bdmv_process_strategy") or "all"
@@ -451,7 +451,7 @@ class BDRemuxer(_PluginBase):
             while active_threads >= MAX_THREADS:
                 time.sleep(5)  # 等待空闲线程
             active_threads += 1
-            self.logger.info(f"开始处理BDMV: {bdmv_path}")
+            logger.info(f"开始处理BDMV: {bdmv_path}")
             bd_root = os.path.dirname(bdmv_path)
             thread = threading.Thread(target=self.process_wrapper, args=(bd_root, active_threads))
             thread.start()
@@ -461,7 +461,7 @@ class BDRemuxer(_PluginBase):
         if self.get_config("wait_for_completion"):
             for t in threads:
                 t.join()
-            self.logger.info("所有BDMV处理完成")
+            logger.info("所有BDMV处理完成")
 
 
     def stop_service(self):
