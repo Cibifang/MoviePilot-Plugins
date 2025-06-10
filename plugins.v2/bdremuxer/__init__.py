@@ -22,7 +22,7 @@ try:
 except:
     logger.error("requirements 安装失败")
 
-class BDRemuxer(_PluginBase):
+class BDRemuxer2(_PluginBase):
     # 插件名称
     plugin_name = "BDMV Remuxer Test2"
     # 插件描述
@@ -32,7 +32,7 @@ class BDRemuxer(_PluginBase):
     # 主题色
     plugin_color = "#3B5E8E"
     # 插件版本
-    plugin_version = "2.1.1"
+    plugin_version = "2.1.2"
     # 插件作者
     plugin_author = "hankun"
     # 作者主页
