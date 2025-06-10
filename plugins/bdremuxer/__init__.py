@@ -23,7 +23,7 @@ try:
 except:
     logger.error("requirements 安装失败")
 
-class BDRemuxer(_PluginBase):
+class BDRemuxer3(_PluginBase):
     # 插件名称
     plugin_name = "BDMV Remuxer Test3"
     # 插件描述

@@ -33,7 +33,7 @@
         "author": "hankun",
         "level": 1
     },
-    "BDRemuxer": {
+    "BDRemuxer3": {
         "name": "BDMV Remuxer Test3",
         "description": "使用ffmpeg自动提取BDMV文件夹中的视频流和音频流，合并为MKV文件。低性能设备不推荐使用",
         "version": "1.1.1",
